@@ -1,0 +1,155 @@
+# =====================================================
+# Python
+# =====================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# =====================================================
+# Virtual environments
+# =====================================================
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# =====================================================
+# Package managers
+# =====================================================
+.uv/
+.poetry/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# =====================================================
+# Environment variables (NEVER commit secrets)
+# =====================================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+!.env.example
+
+# =====================================================
+# IDE / Editor
+# =====================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# =====================================================
+# Jupyter
+# =====================================================
+.ipynb_checkpoints/
+
+# =====================================================
+# Testing & coverage
+# =====================================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# =====================================================
+# Type checkers & linters
+# =====================================================
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# =====================================================
+# Docker
+# =====================================================
+docker/data/
+docker/volumes/
+docker/postgres-data/
+docker/redis-data/
+docker/triton-models/
+
+# =====================================================
+# Logs
+# =====================================================
+*.log
+logs/
+log/
+
+# =====================================================
+# Database dumps & backups
+# =====================================================
+*.sql.gz
+*.dump
+*.backup
+backups/
+
+# =====================================================
+# AI/ML model artifacts (downloaded models, ONNX exports)
+# =====================================================
+models/
+*.onnx
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.gguf
+.cache/
+huggingface/
+
+# =====================================================
+# Embeddings / large data files
+# =====================================================
+data/raw/
+data/processed/
+data/embeddings/
+*.parquet
+*.feather
+*.h5
+*.hdf5
+
+# =====================================================
+# Documentation builds
+# =====================================================
+docs/_build/
+site/
+
+# =====================================================
+# Misc
+# =====================================================
+*.tmp
+*.bak
+.scratch/
+scratch/
+TODO.local.md
