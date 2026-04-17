@@ -110,4 +110,4 @@ volumes:
   pgadmin_data:
     name: devdocs-pgadmin-data
   redis_data:
-    name: devdocs-redis-data 
+    name: devdocs-redis-data
