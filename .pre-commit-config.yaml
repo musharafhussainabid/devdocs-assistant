@@ -1,0 +1,45 @@
+# =============================================================================
+# Pre-commit hooks — run automatically before every git commit
+# =============================================================================
+# Install once:  uv run pre-commit install
+# Manual run:    uv run pre-commit run --all-files
+# Skip (emergency only): git commit --no-verify
+# =============================================================================
+
+repos:
+  # ---------------------------------------------------------------------------
+  # General file hygiene
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace        # strips trailing spaces
+      - id: end-of-file-fixer          # ensures files end with newline
+      - id: check-yaml                 # validates YAML syntax
+      - id: check-json                 # validates JSON syntax
+      - id: check-added-large-files    # blocks accidental large file commits
+        args: ['--maxkb=1000']         # 1MB limit — catches model files
+      - id: check-merge-conflict       # catches unresolved merge markers
+      - id: no-commit-to-branch        # blocks direct commits to protected branches
+        args: ['--branch', 'main']
+
+  # ---------------------------------------------------------------------------
+  # Python — Ruff (linting + formatting in one tool)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.8
+    hooks:
+      - id: ruff                       # lint
+        args: [--fix]                  # auto-fix safe issues
+      - id: ruff-format               # format (replaces black)
+
+  # ---------------------------------------------------------------------------
+  # SQL — SQLFluff (lint SQL files)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.3.1
+    hooks:
+      - id: sqlfluff-lint
+        args: [--dialect, postgres]
+      - id: sqlfluff-fix
+        args: [--dialect, postgres]

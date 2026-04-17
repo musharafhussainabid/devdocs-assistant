@@ -1,0 +1,113 @@
+
+
+# =============================================================================
+# DevDocs Assistant — Local Development Stack
+# =============================================================================
+# Usage:
+#   cp .env.example .env        # first time only
+#   docker compose up -d        # start everything
+#   docker compose ps           # check status
+#   docker compose logs -f db   # follow postgres logs
+#   docker compose down         # stop (data persists in volumes)
+#   docker compose down -v      # stop + destroy volumes (full reset)
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 + pgvector
+  # ---------------------------------------------------------------------------
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: devdocs-db
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-devdocs}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devdocs_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-devdocs}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-devdocs}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    shm_size: 256mb  # prevents "out of shared memory" on heavy queries
+
+  # ---------------------------------------------------------------------------
+  # pgAdmin 4 — browser-based DB management
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: devdocs-pgadmin
+    restart: unless-stopped
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@devdocs.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"        # desktop mode, no login required
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # Redis — caching layer (used from Phase 5+)
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: devdocs-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # NVIDIA Triton Inference Server (CPU) — UNCOMMENT IN PHASE 5
+  # ---------------------------------------------------------------------------
+  # triton:
+  #   image: nvcr.io/nvidia/tritonserver:24.01-py3      # CPU-compatible tag
+  #   container_name: devdocs-triton
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${TRITON_HTTP_PORT:-8000}:8000"               # HTTP inference
+  #     - "${TRITON_GRPC_PORT:-8001}:8001"               # gRPC inference
+  #     - "${TRITON_METRICS_PORT:-8002}:8002"             # Prometheus metrics
+  #   volumes:
+  #     - ./triton-models:/models                         # model repository
+  #   command: >
+  #     tritonserver
+  #       --model-repository=/models
+  #       --strict-model-config=false
+  #       --log-verbose=1
+  #   # No GPU flags — runs on CPU by default
+  #   # To enable GPU, add:
+  #   #   deploy:
+  #   #     resources:
+  #   #       reservations:
+  #   #         devices:
+  #   #           - driver: nvidia
+  #   #             count: 1
+  #   #             capabilities: [gpu]
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+
+volumes:
+  pgdata:
+    name: devdocs-pgdata
+  pgadmin_data:
+    name: devdocs-pgadmin-data
+  redis_data:
+    name: devdocs-redis-data

@@ -1,0 +1,64 @@
+[project]
+name = "devdocs-assistant"
+version = "0.0.1"
+description = "Multi-tenant RAG product for open-source software documentation"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = [
+    "psycopg[binary]>=3.1",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.11",
+    "sqlfluff>=3.0",
+    "pre-commit>=4.0",
+    "pytest>=8.0",
+]
+
+# =============================================================================
+# Ruff — Python linter + formatter
+# =============================================================================
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade (modern Python syntax)
+    "B",   # flake8-bugbear (common bugs)
+    "SIM", # flake8-simplify
+    "N",   # pep8-naming
+]
+ignore = [
+    "E501",  # line too long — handled by formatter
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# =============================================================================
+# SQLFluff — SQL linter
+# =============================================================================
+[tool.sqlfluff.core]
+dialect = "postgres"
+max_line_length = 120
+large_file_skip_byte_limit = 0
+
+[tool.sqlfluff.indentation]
+indent_unit = "space"
+tab_space_size = 4
+
+# =============================================================================
+# Pytest
+# =============================================================================
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
