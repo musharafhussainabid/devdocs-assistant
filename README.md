@@ -51,7 +51,7 @@ devdocs-assistant/
 
 ## Progress
 
-- [ ] **Phase 0** — Bootstrap (`v0.0-bootstrap`)
+- [x] **Phase 0** — Bootstrap (`v0.0-bootstrap`)
 - [ ] **Phase 1** — PostgreSQL Foundations (`v0.1-foundations`)
 - [ ] **Phase 2** — Advanced SQL & Performance (`v0.2-advanced-sql`)
 - [ ] **Phase 3** — Reliability & Schema Design for AI (`v0.3-reliability`)
